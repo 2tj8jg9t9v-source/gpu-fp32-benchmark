@@ -97,8 +97,8 @@
           <button id="run" type="button">Запустить тест</button>
           <button id="share" type="button" hidden>Поделиться</button>
           <select id="duration" aria-label="Длительность теста">
-            <option value="5">Быстрый тест · 5 сек</option>
-            <option value="15">Подробный тест · 15 сек</option>
+            <option value="15" selected>Максимальная нагрузка · 15 сек</option>
+            <option value="5">Короткий тест · 5 сек</option>
           </select>
         </div>
         <p class="status" id="status" role="status">Для точного результата закройте игры и тяжёлые приложения.</p>
@@ -107,7 +107,7 @@
           <div><div class="detail-label">API</div><div class="detail-value">WebGPU · FP32</div></div>
         </div>
       </section>
-      <p class="note">TFLOP/s — измеренная скорость FP32-вычислений этого теста, а не оценка игровой производительности. Скорость зависит от браузера, температуры устройства и энергосбережения. Во время теста телефон может нагреться.</p>
+      <p class="note">TFLOP/s — измеренная скорость FP32-вычислений этого теста, а не оценка игровой производительности. FMA считается как 2 FLOP. Перед измерением GPU разогревается; для высокой нагрузки команды отправляются крупными порциями, поэтому интерфейс может временно перестать отвечать. Скорость зависит от браузера, температуры и энергосбережения.</p>
     </main>
 
     <script type="module">
@@ -124,8 +124,8 @@
       const workgroups = 256;
       const workgroupSize = 64;
       const iterations = 256;
-      const dispatchesPerBatch = 8;
-      const operationsPerDispatch = workgroups * workgroupSize * iterations * 11;
+      const dispatchesPerBatch = 1024;
+      const operationsPerDispatch = workgroups * workgroupSize * iterations * 8;
       let running = false;
       let lastResult = "";
 
@@ -208,8 +208,13 @@
             device.queue.submit([encoder.finish()]);
           };
 
-          submitBatch();
-          await device.queue.onSubmittedWorkDone();
+          status.textContent = "Разогрев GPU…";
+          const warmupStart = performance.now();
+          while (performance.now() - warmupStart < 1500) {
+            submitBatch();
+            await device.queue.onSubmittedWorkDone();
+          }
+
           const durationMs = Number(durationSelect.value) * 1000;
           const start = performance.now();
           let batches = 0;
