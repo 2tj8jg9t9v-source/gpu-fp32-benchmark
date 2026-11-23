@@ -97,7 +97,8 @@
           <button id="run" type="button">Запустить тест</button>
           <button id="share" type="button" hidden>Поделиться</button>
           <select id="duration" aria-label="Длительность теста">
-            <option value="15" selected>Максимальная нагрузка · 15 сек</option>
+            <option value="60" selected>Максимальная нагрузка · 1 мин</option>
+            <option value="120">Максимальная нагрузка · 2 мин</option>
             <option value="5">Короткий тест · 5 сек</option>
           </select>
         </div>
@@ -107,7 +108,7 @@
           <div><div class="detail-label">API</div><div class="detail-value">WebGPU · FP32</div></div>
         </div>
       </section>
-      <p class="note">TFLOP/s — измеренная скорость FP32-вычислений этого теста, а не оценка игровой производительности. FMA считается как 2 FLOP. Перед измерением GPU разогревается; для высокой нагрузки команды отправляются крупными порциями, поэтому интерфейс может временно перестать отвечать. Скорость зависит от браузера, температуры и энергосбережения.</p>
+      <p class="note">TFLOP/s — измеренная скорость FP32-вычислений этого теста, а не оценка игровой производительности. FMA считается как 2 FLOP. Перед измерением GPU разогревается; команды отправляются очень крупными блоками для максимальной нагрузки, поэтому интерфейс может временно перестать отвечать. Длительный тест нагревает телефон и расходует заряд; скорость зависит от браузера, температуры и энергосбережения.</p>
     </main>
 
     <script type="module">
@@ -124,7 +125,7 @@
       const workgroups = 256;
       const workgroupSize = 64;
       const iterations = 256;
-      const dispatchesPerBatch = 1024;
+      const dispatchesPerBatch = 4096;
       const operationsPerDispatch = workgroups * workgroupSize * iterations * 8;
       let running = false;
       let lastResult = "";
@@ -226,7 +227,6 @@
             batches += 1;
             const elapsed = performance.now() - start;
             setProgress(Math.min(100, (elapsed / durationMs) * 100));
-            await new Promise((resolve) => setTimeout(resolve, 0));
           }
 
           const elapsedSeconds = (performance.now() - start) / 1000;
