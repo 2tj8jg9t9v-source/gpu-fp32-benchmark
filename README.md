@@ -10,6 +10,4 @@
 
 ## Публикация
 
-Публичная страница: [открыть тест GPU FP32](https://raw.githack.com/2tj8jg9t9v-source/gpu-fp32-benchmark/main/index.html).
-
-Для публикации на собственном домене GitHub Pages откройте **Settings → Pages**, выберите **GitHub Actions** как источник; после этого workflow автоматически опубликует сайт при каждом push в `main` по адресу `https://2tj8jg9t9v-source.github.io/gpu-fp32-benchmark/`.
+Чтобы включить публичную страницу, откройте **Settings → Pages** репозитория и выберите **GitHub Actions** как источник. Затем запустите workflow **Deploy static site to GitHub Pages**. Сайт будет доступен по адресу `https://2tj8jg9t9v-source.github.io/gpu-fp32-benchmark/`; последующие push в `main` будут публиковаться автоматически.
